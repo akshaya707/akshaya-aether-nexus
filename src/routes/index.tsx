@@ -1,29 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense, useEffect, useState } from "react";
+import Portfolio from "@/components/Portfolio";
+import { NeuralBackground } from "@/components/NeuralBackground";
+import { CustomCursor } from "@/components/CustomCursor";
+import { SmoothScroll } from "@/components/SmoothScroll";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Akshaya Parella — AI Engineer & Deep Learning Specialist" },
+      { name: "description", content: "Portfolio of Akshaya Parella — AI Engineer specializing in deep learning, computer vision, CNN architectures, and intelligent enterprise systems." },
+      { name: "keywords", content: "Akshaya Parella, AI Engineer, Deep Learning, Computer Vision, CNN, TensorFlow, Pega, Portfolio" },
+      { property: "og:title", content: "Akshaya Parella — AI Engineer" },
+      { property: "og:description", content: "Ultra-premium portfolio showcasing AI, deep learning and enterprise workflow projects." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      {mounted && (
+        <>
+          <SmoothScroll />
+          <CustomCursor />
+          <NeuralBackground />
+        </>
+      )}
+      <Portfolio />
+    </>
   );
 }
