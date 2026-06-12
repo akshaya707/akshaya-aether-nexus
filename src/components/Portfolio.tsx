@@ -779,14 +779,78 @@ function Contact() {
   );
 }
 
+/* ---------- CAREER PATH ---------- */
+function CareerPath() {
+  const steps = [
+    { title: "SSC", desc: "Secondary schooling — first taste of programming.", Icon: GraduationCap },
+    { title: "Intermediate (MPC)", desc: "Maths, Physics, Chemistry — analytical foundations.", Icon: GraduationCap },
+    { title: "B.Tech in AI", desc: "Specialization in Artificial Intelligence & Machine Learning.", Icon: Brain },
+    { title: "IBM AI Fundamentals", desc: "Certified in core AI concepts & workflows.", Icon: Award },
+    { title: "Pega CSA", desc: "Certified System Architect — enterprise low-code mastery.", Icon: Layers },
+    { title: "Pega CSSA", desc: "Senior System Architect — advanced case design & decisioning.", Icon: Layers },
+    { title: "AI Projects", desc: "Diabetic Retinopathy CNN, GiftStore Pega app & more.", Icon: Code2 },
+    { title: "Future AI Engineer", desc: "Building intelligent products at scale.", Icon: Rocket },
+  ];
+  return (
+    <Section id="career">
+      <SectionTitle kicker="04 / Career Path" title="The road so far — and ahead." />
+      <div className="relative">
+        <div className="absolute left-5 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[var(--primary)]/60 to-transparent" />
+        {steps.map((s, i) => (
+          <motion.div key={s.title}
+            initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.55, delay: 0.05 }}
+            className={`relative mb-10 md:grid md:grid-cols-2 md:gap-12 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
+          >
+            <div className={`pl-14 md:pl-0 ${i % 2 ? "md:text-left" : "md:text-right"}`}>
+              <motion.div whileHover={{ y: -4 }} className="glass p-6 inline-block text-left max-w-md">
+                <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--neon)]">Step {String(i + 1).padStart(2, "0")}</div>
+                <h3 className="mt-2 text-xl font-semibold">{s.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+              </motion.div>
+            </div>
+            <div className="absolute left-5 md:left-1/2 -translate-x-1/2 top-6">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] shadow-[0_0_25px_oklch(0.72_0.2_250/80%)] ring-4 ring-background">
+                <s.Icon className="h-4 w-4 text-white" />
+              </div>
+            </div>
+            <div className="hidden md:block" />
+          </motion.div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
 function Footer() {
   return (
     <footer className="border-t border-white/5 mt-20">
-      <div className="mx-auto max-w-7xl px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} Akshaya Parella. Engineered with curiosity.</p>
-        <p className="font-mono text-xs flex items-center gap-2">
-          <Cpu className="h-3.5 w-3.5" /> Built with React · Framer Motion · Lenis
-        </p>
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <motion.p
+          initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.6 }}
+          className="text-center text-2xl md:text-3xl font-bold gradient-text"
+        >
+          Building intelligent solutions through AI and innovation.
+        </motion.p>
+        <div className="mt-8 flex justify-center gap-4">
+          {[
+            { Icon: Github, href: "https://github.com/" },
+            { Icon: Linkedin, href: "https://linkedin.com/" },
+            { Icon: Mail, href: "mailto:akshaya@example.com" },
+          ].map(({ Icon, href }, i) => (
+            <a key={i} href={href} target="_blank" rel="noreferrer"
+               className="grid h-11 w-11 place-items-center rounded-full glass transition-all hover:scale-110 hover:border-[var(--primary)]">
+              <Icon className="h-4 w-4" />
+            </a>
+          ))}
+        </div>
+        <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-muted-foreground border-t border-white/5 pt-6">
+          <p>© {new Date().getFullYear()} Akshaya Parella. Engineered with curiosity.</p>
+          <p className="font-mono text-xs flex items-center gap-2">
+            <Cpu className="h-3.5 w-3.5" /> Built with React · Framer Motion · Lenis
+          </p>
+        </div>
       </div>
     </footer>
   );
@@ -799,6 +863,7 @@ export default function Portfolio() {
       <Hero />
       <About />
       <Skills />
+      <CareerPath />
       <TechStack />
       <Education />
       <Certifications />
