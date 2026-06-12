@@ -339,7 +339,7 @@ function Hero() {
             className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-4"
           >
             <MagneticButton href="#projects"><Sparkles className="h-4 w-4" /> View Projects</MagneticButton>
-            <MagneticButton variant="ghost" href={resumeUrl} download="Akshaya_Resume.pdf"><Download className="h-4 w-4" /> Download Resume</MagneticButton>
+            <MagneticButton variant="ghost" href={resumeUrl}><Download className="h-4 w-4" /> Download Resume</MagneticButton>
             <MagneticButton variant="ghost" href="https://linkedin.com/in/akshayaparella"><Linkedin className="h-4 w-4" /> LinkedIn</MagneticButton>
           </motion.div>
 
@@ -800,7 +800,7 @@ function Contact() {
             <p className="text-sm text-muted-foreground">Download the full résumé as PDF.</p>
           </div>
         </div>
-        <MagneticButton href={resumeUrl} download="Akshaya_Resume.pdf"><Download className="h-4 w-4" /> Download Resume</MagneticButton>
+        <MagneticButton href={resumeUrl}><Download className="h-4 w-4" /> Download Resume</MagneticButton>
       </div>
     </Section>
   );
