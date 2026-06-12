@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import {
   Github, Linkedin, Mail, Download, ArrowUpRight, Sparkles, Brain, Code2,
   Database, Cpu, GraduationCap, Award, Trophy, Heart, Briefcase, MapPin,
-  Send, ExternalLink, FileText, Layers, Zap, Eye,
+  Send, ExternalLink, FileText, Layers, Zap, Eye, Rocket,
 } from "lucide-react";
+import akshayaPhoto from "@/assets/akshaya.jpg";
 
 /* ---------- helpers ---------- */
 function useMagnetic(strength = 0.35) {
