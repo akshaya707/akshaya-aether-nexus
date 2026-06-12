@@ -6,41 +6,32 @@ interface Particle {
   vx: number;
   vy: number;
   life: number;
-  maxLife: number;
   size: number;
-  color: string;
 }
 
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const pulseRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hover, setHover] = useState(false);
   const [clicking, setClicking] = useState(false);
   const particlesRef = useRef<Particle[]>([]);
   const rafRef = useRef(0);
-  const mxRef = useRef(0);
-  const myRef = useRef(0);
+  const mxRef = useRef(-100);
+  const myRef = useRef(-100);
 
-  const spawnParticles = useCallback((x: number, y: number, count = 12) => {
-    const colors = [
-      "oklch(0.68 0.25 300)",   // neon purple
-      "oklch(0.72 0.2 250)",    // neon blue
-      "oklch(0.75 0.18 180)",   // neon cyan
-      "#ffffff",
-    ];
+  const spawnParticles = useCallback((x: number, y: number, count = 14) => {
     for (let i = 0; i < count; i++) {
-      const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
-      const speed = 2 + Math.random() * 4;
+      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.8;
+      const speed = 1.5 + Math.random() * 5;
       particlesRef.current.push({
         x,
         y,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
         life: 1,
-        maxLife: 0.6 + Math.random() * 0.4,
-        size: 1 + Math.random() * 3,
-        color: colors[Math.floor(Math.random() * colors.length)],
+        size: 1.2 + Math.random() * 2.5,
       });
     }
   }, []);
@@ -54,54 +45,55 @@ export function CustomCursor() {
     if (!ctx) return;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth * window.devicePixelRatio;
+      canvas.height = window.innerHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     };
     resize();
     window.addEventListener("resize", resize);
 
-    let rx = 0, ry = 0;
+    let rx = -100, ry = -100;
 
     const renderParticles = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      ctx.clearRect(0, 0, w, h);
+
       particlesRef.current = particlesRef.current.filter((p) => {
         p.x += p.vx;
         p.y += p.vy;
-        p.vx *= 0.96;
-        p.vy *= 0.96;
-        p.life -= 0.02;
+        p.vx *= 0.95;
+        p.vy *= 0.95;
+        p.life -= 0.018;
         if (p.life <= 0) return false;
 
         const alpha = p.life;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-        ctx.fillStyle = p.color.replace(")", ` / ${alpha})`).replace("oklch", "oklch").replace("#", "rgba(").replace(/(..)(..)(..)/, (_, r, g, b) => {
-          // Convert hex to rgba fallback
-          return `rgba(${parseInt(r,16)},${parseInt(g,16)},${parseInt(b,16)},${alpha})`;
-        });
-        // Use a simpler approach for colors
-        if (p.color.startsWith("oklch")) {
-          ctx.fillStyle = p.color.replace(/\)$/, ` / ${alpha})`);
-        } else {
-          ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-        }
-        ctx.fill();
+        const currentSize = p.size * p.life;
 
         // Glow
-        ctx.shadowBlur = 10 * p.life;
-        ctx.shadowColor = p.color.startsWith("oklch") ? "oklch(0.72 0.2 250)" : p.color;
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        ctx.shadowBlur = 12 * alpha;
+        ctx.shadowColor = "oklch(0.72 0.2 250)";
 
+        // Particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+        ctx.fillStyle = `oklch(0.78 0.18 230 / ${alpha})`;
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
         return true;
       });
     };
 
     const tick = () => {
-      rx += (mxRef.current - rx) * 0.15;
-      ry += (myRef.current - ry) * 0.15;
+      rx += (mxRef.current - rx) * 0.14;
+      ry += (myRef.current - ry) * 0.14;
       if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${rx - (hover ? 32 : 20)}px, ${ry - (hover ? 32 : 20)}px)`;
+        const size = hover ? 52 : 36;
+        ringRef.current.style.transform = `translate(${rx - size / 2}px, ${ry - size / 2}px)`;
+      }
+      if (pulseRef.current && hover) {
+        pulseRef.current.style.transform = `translate(${mxRef.current - 42}px, ${myRef.current - 42}px)`;
       }
       renderParticles();
       rafRef.current = requestAnimationFrame(tick);
@@ -112,17 +104,19 @@ export function CustomCursor() {
       mxRef.current = e.clientX;
       myRef.current = e.clientY;
       if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+        dotRef.current.style.transform = `translate(${e.clientX - 5}px, ${e.clientY - 5}px)`;
       }
     };
 
     const over = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
-      const isInteractive = t.closest("a, button, [data-magnetic], input, textarea, [data-cursor-hover], .project-card, .skill-bar, .glass, .glass-strong");
+      const isInteractive = t.closest(
+        "a, button, [data-magnetic], input, textarea, [data-cursor-hover], .glass, .glass-strong"
+      );
       if (isInteractive) {
         if (!hover) {
           setHover(true);
-          spawnParticles(e.clientX, e.clientY, 8);
+          spawnParticles(e.clientX, e.clientY, 10);
         }
       } else {
         setHover(false);
@@ -131,7 +125,7 @@ export function CustomCursor() {
 
     const down = (e: MouseEvent) => {
       setClicking(true);
-      spawnParticles(e.clientX, e.clientY, 16);
+      spawnParticles(e.clientX, e.clientY, 20);
     };
 
     const up = () => {
@@ -153,8 +147,8 @@ export function CustomCursor() {
     };
   }, [hover, spawnParticles]);
 
-  const ringSize = hover ? 64 : 40;
-  const dotSize = clicking ? 6 : 8;
+  const ringSize = hover ? 52 : 36;
+  const dotSize = clicking ? 10 : hover ? 7 : 5;
 
   return (
     <>
@@ -162,53 +156,54 @@ export function CustomCursor() {
       <canvas
         ref={canvasRef}
         className="pointer-events-none fixed inset-0 z-[9997]"
-        style={{ willChange: "contents" }}
+        style={{ width: "100vw", height: "100vh", willChange: "contents" }}
       />
       {/* Core dot */}
       <div
         ref={dotRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full transition-[width,height,background-color,box-shadow] duration-150"
+        className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full transition-all duration-150"
         style={{
           width: dotSize,
           height: dotSize,
           willChange: "transform",
           backgroundColor: hover ? "oklch(0.68 0.25 300)" : "#ffffff",
           boxShadow: hover
-            ? "0 0 20px oklch(0.68 0.25 300), 0 0 40px oklch(0.68 0.25 300 / 50%)"
-            : "0 0 10px oklch(0.72 0.2 250 / 80%), 0 0 20px oklch(0.72 0.2 250 / 40%)",
+            ? "0 0 24px oklch(0.68 0.25 300), 0 0 48px oklch(0.68 0.25 300 / 50%), 0 0 80px oklch(0.68 0.25 300 / 25%)"
+            : "0 0 12px oklch(0.72 0.2 250 / 80%), 0 0 24px oklch(0.72 0.2 250 / 40%)",
         }}
       />
       {/* Outer ring */}
       <div
         ref={ringRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9998] rounded-full transition-[width,height,border-color,background,box-shadow,transform] duration-300 ease-out"
+        className="pointer-events-none fixed left-0 top-0 z-[9998] rounded-full transition-all duration-300 ease-out"
         style={{
           width: ringSize,
           height: ringSize,
           willChange: "transform",
-          border: `2px solid ${hover ? "oklch(0.68 0.25 300)" : "oklch(0.72 0.2 250 / 60%)"}`,
+          border: `1.5px solid ${hover ? "oklch(0.68 0.25 300 / 80%)" : "oklch(0.72 0.2 250 / 50%)"}`,
           background: hover
-            ? "oklch(0.68 0.25 300 / 12%)"
+            ? "oklch(0.68 0.25 300 / 10%)"
             : "oklch(0.72 0.2 250 / 5%)",
           transform: "translate(-100px,-100px)",
           boxShadow: hover
-            ? `0 0 30px oklch(0.68 0.25 300 / 40%), inset 0 0 20px oklch(0.68 0.25 300 / 10%)`
-            : `0 0 20px oklch(0.72 0.2 250 / 30%), inset 0 0 15px oklch(0.72 0.2 250 / 5%)`,
-          backdropFilter: hover ? "blur(2px)" : "none",
+            ? `0 0 40px oklch(0.68 0.25 300 / 35%), inset 0 0 30px oklch(0.68 0.25 300 / 8%)`
+            : `0 0 25px oklch(0.72 0.2 250 / 25%), inset 0 0 20px oklch(0.72 0.2 250 / 5%)`,
         }}
       />
-      {/* Pulse ring on hover */}
-      {hover && (
-        <div
-          className="pointer-events-none fixed left-0 top-0 z-[9996] rounded-full animate-ping"
-          style={{
-            width: ringSize + 20,
-            height: ringSize + 20,
-            border: "1px solid oklch(0.68 0.25 300 / 40%)",
-            transform: `translate(${mxRef.current - (ringSize + 20) / 2}px, ${myRef.current - (ringSize + 20) / 2}px)`,
-          }}
-        />
-      )}
+      {/* Hover pulse ring */}
+      <div
+        ref={pulseRef}
+        className="pointer-events-none fixed left-0 top-0 z-[9996] rounded-full"
+        style={{
+          width: 84,
+          height: 84,
+          border: "1px solid oklch(0.68 0.25 300 / 30%)",
+          transform: "translate(-200px,-200px)",
+          opacity: hover ? 1 : 0,
+          transition: "opacity 0.3s ease, transform 0.1s linear",
+          animation: hover ? "cursor-ping 1.2s cubic-bezier(0,0,0.2,1) infinite" : "none",
+        }}
+      />
     </>
   );
 }
