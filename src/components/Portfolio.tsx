@@ -181,6 +181,7 @@ function ProfileOrb() {
   return (
     <div
       ref={wrap}
+      data-cursor-hover
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       style={{ perspective: 1200 }}
@@ -398,6 +399,7 @@ function About() {
             <motion.div key={i}
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.1 }}
+              data-cursor-hover
               className="glass p-6 hover:border-[var(--primary)] transition-colors"
             >
               <div className="text-3xl font-bold gradient-text"><Counter to={st.n} suffix={st.s} /></div>
@@ -482,6 +484,7 @@ function TechStack() {
             initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.03 }}
             whileHover={{ y: -6, scale: 1.08 }}
+            data-cursor-hover
             className="glass aspect-square flex flex-col items-center justify-center gap-2 group hover:border-[var(--primary)] hover:shadow-[0_0_30px_oklch(0.72_0.2_250/40%)] transition-all"
           >
             <img src={t.url} alt={t.name} className="h-10 w-10 transition-transform group-hover:scale-110" loading="lazy" />
