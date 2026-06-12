@@ -102,8 +102,8 @@ function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
 
 /* ---------- Magnetic button ---------- */
 function MagneticButton({
-  children, href, onClick, variant = "primary",
-}: { children: React.ReactNode; href?: string; onClick?: () => void; variant?: "primary" | "ghost" }) {
+  children, href, onClick, variant = "primary", download,
+}: { children: React.ReactNode; href?: string; onClick?: () => void; variant?: "primary" | "ghost"; download?: boolean | string }) {
   const { ref, sx, sy } = useMagnetic(0.3);
   const cls =
     variant === "primary"
@@ -115,7 +115,19 @@ function MagneticButton({
       {children}
     </motion.div>
   );
-  if (href) return <a href={href} target="_blank" rel="noreferrer">{inner}</a>;
+  if (href) {
+    const downloadAttr = download === true ? "" : download;
+    return (
+      <a
+        href={href}
+        target={download ? undefined : "_blank"}
+        rel="noreferrer"
+        {...(download !== undefined ? { download: downloadAttr as string } : {})}
+      >
+        {inner}
+      </a>
+    );
+  }
   return <button onClick={onClick}>{inner}</button>;
 }
 
