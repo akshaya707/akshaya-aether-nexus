@@ -120,3 +120,8 @@
 @utility neon-shadow {
   box-shadow: var(--shadow-neon);
 }
+
+@keyframes cursor-ping {
+  0% { transform: translate(var(--tx, 0), var(--ty, 0)) scale(0.8); opacity: 1; }
+  75%, 100% { transform: translate(var(--tx, 0), var(--ty, 0)) scale(1.4); opacity: 0; }
+}
