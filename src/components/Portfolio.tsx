@@ -8,7 +8,9 @@ import {
 import akshayaAsset from "@/assets/akshaya-profile.jpg.asset.json";
 import retinoAsset from "@/assets/retino.jpg.asset.json";
 import giftstoreAsset from "@/assets/giftstore.jpg.asset.json";
+import resumeAsset from "@/assets/Akshaya_Resume.pdf.asset.json";
 const akshayaPhoto = akshayaAsset.url;
+const resumeUrl = resumeAsset.url;
 
 /* ---------- helpers ---------- */
 function useMagnetic(strength = 0.35) {
