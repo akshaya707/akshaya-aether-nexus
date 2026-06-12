@@ -5,7 +5,10 @@ import {
   Database, Cpu, GraduationCap, Award, Trophy, Heart, Briefcase, MapPin,
   Send, ExternalLink, FileText, Layers, Zap, Eye, Rocket,
 } from "lucide-react";
-import akshayaPhoto from "@/assets/akshaya.jpg";
+import akshayaAsset from "@/assets/akshaya-profile.jpg.asset.json";
+import retinoAsset from "@/assets/retino.jpg.asset.json";
+import giftstoreAsset from "@/assets/giftstore.jpg.asset.json";
+const akshayaPhoto = akshayaAsset.url;
 
 /* ---------- helpers ---------- */
 function useMagnetic(strength = 0.35) {
@@ -590,10 +593,15 @@ function ProjectCard({ project, i }: { project: typeof projects[number]; i: numb
              style={{ background: "radial-gradient(600px circle at var(--mx,50%) var(--my,50%), oklch(0.72 0.2 250 / 12%), transparent 40%)" }} />
         <div className="relative aspect-video overflow-hidden border-b border-white/10">
           <div className="absolute inset-0" style={{ background: project.bg }} />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <project.Icon className="h-24 w-24 text-white/30" />
-          </div>
-          <div className="absolute top-4 left-4 flex gap-2">
+          {project.image ? (
+            <img src={project.image} alt={project.title} className="absolute inset-0 h-full w-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <project.Icon className="h-24 w-24 text-white/30" />
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+          <div className="absolute top-4 left-4 flex gap-2 z-10">
             <span className="rounded-full glass px-3 py-1 text-[10px] font-mono uppercase tracking-wider">{project.tag}</span>
           </div>
         </div>
@@ -626,6 +634,7 @@ const projects = [
     desc: "Automated detection and severity classification of diabetic retinopathy from retinal fundus images. CNN backbone with UCLAHE preprocessing and Grad-CAM visualization for explainable, clinician-friendly predictions — deployed via Streamlit.",
     tech: ["CNN", "TensorFlow", "OpenCV", "Streamlit", "Grad-CAM", "UCLAHE"],
     Icon: Eye,
+    image: retinoAsset.url,
     bg: "linear-gradient(135deg, oklch(0.3 0.18 250), oklch(0.25 0.22 305))",
   },
   {
@@ -634,6 +643,7 @@ const projects = [
     desc: "End-to-end gift ordering & fulfillment platform built on Pega. Case management, data modeling, automated workflows and SLA-driven routing — turning a manual ordering process into a streamlined enterprise flow.",
     tech: ["Pega Platform", "Case Management", "Data Modeling", "Workflow Automation"],
     Icon: Layers,
+    image: giftstoreAsset.url,
     bg: "linear-gradient(135deg, oklch(0.28 0.2 300), oklch(0.32 0.18 220))",
   },
 ];
