@@ -181,6 +181,7 @@ function ProfileOrb() {
   return (
     <div
       ref={wrap}
+      data-cursor-hover
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       style={{ perspective: 1200 }}
@@ -398,6 +399,7 @@ function About() {
             <motion.div key={i}
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.1 }}
+              data-cursor-hover
               className="glass p-6 hover:border-[var(--primary)] transition-colors"
             >
               <div className="text-3xl font-bold gradient-text"><Counter to={st.n} suffix={st.s} /></div>
@@ -482,6 +484,7 @@ function TechStack() {
             initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.03 }}
             whileHover={{ y: -6, scale: 1.08 }}
+            data-cursor-hover
             className="glass aspect-square flex flex-col items-center justify-center gap-2 group hover:border-[var(--primary)] hover:shadow-[0_0_30px_oklch(0.72_0.2_250/40%)] transition-all"
           >
             <img src={t.url} alt={t.name} className="h-10 w-10 transition-transform group-hover:scale-110" loading="lazy" />
@@ -512,7 +515,7 @@ function Education() {
             className={`relative mb-12 md:grid md:grid-cols-2 md:gap-12 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
           >
             <div className={`pl-12 md:pl-0 ${i % 2 ? "md:text-left" : "md:text-right"}`}>
-              <div className="glass p-6 inline-block text-left">
+              <div data-cursor-hover className="glass p-6 inline-block text-left">
                 <div className="font-mono text-xs text-[var(--neon)]">{it.year}</div>
                 <h3 className="mt-1 text-xl font-semibold">{it.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{it.place}</p>
@@ -803,7 +806,7 @@ function CareerPath() {
             className={`relative mb-10 md:grid md:grid-cols-2 md:gap-12 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
           >
             <div className={`pl-14 md:pl-0 ${i % 2 ? "md:text-left" : "md:text-right"}`}>
-              <motion.div whileHover={{ y: -4 }} className="glass p-6 inline-block text-left max-w-md">
+              <motion.div whileHover={{ y: -4 }} data-cursor-hover className="glass p-6 inline-block text-left max-w-md">
                 <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--neon)]">Step {String(i + 1).padStart(2, "0")}</div>
                 <h3 className="mt-2 text-xl font-semibold">{s.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
