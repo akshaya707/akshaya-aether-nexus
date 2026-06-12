@@ -117,8 +117,10 @@ function MagneticButton({
 /* ---------- NAV ---------- */
 function Nav() {
   const links = [
-    ["About", "about"], ["Skills", "skills"], ["Stack", "stack"],
-    ["Projects", "projects"], ["Experience", "experience"], ["Contact", "contact"],
+    ["Home", "hero"], ["About", "about"], ["Skills", "skills"],
+    ["Career", "career"], ["Projects", "projects"],
+    ["Certifications", "certifications"], ["Stack", "stack"],
+    ["Achievements", "achievements"], ["Contact", "contact"],
   ];
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -135,9 +137,9 @@ function Nav() {
           <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] text-xs font-bold text-white">AP</span>
           <span className="hidden sm:inline">akshaya.ai</span>
         </a>
-        <nav className="hidden gap-1 md:flex">
+        <nav className="hidden gap-1 lg:flex">
           {links.map(([l, h]) => (
-            <a key={h} href={`#${h}`} className="rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground">{l}</a>
+            <a key={h} href={`#${h}`} className="rounded-full px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground">{l}</a>
           ))}
         </nav>
         <a href="#contact" className="hidden md:inline-flex">
