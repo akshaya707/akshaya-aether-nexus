@@ -515,7 +515,7 @@ function Education() {
             className={`relative mb-12 md:grid md:grid-cols-2 md:gap-12 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
           >
             <div className={`pl-12 md:pl-0 ${i % 2 ? "md:text-left" : "md:text-right"}`}>
-              <div className="glass p-6 inline-block text-left">
+              <div data-cursor-hover className="glass p-6 inline-block text-left">
                 <div className="font-mono text-xs text-[var(--neon)]">{it.year}</div>
                 <h3 className="mt-1 text-xl font-semibold">{it.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{it.place}</p>
@@ -806,7 +806,7 @@ function CareerPath() {
             className={`relative mb-10 md:grid md:grid-cols-2 md:gap-12 ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
           >
             <div className={`pl-14 md:pl-0 ${i % 2 ? "md:text-left" : "md:text-right"}`}>
-              <motion.div whileHover={{ y: -4 }} className="glass p-6 inline-block text-left max-w-md">
+              <motion.div whileHover={{ y: -4 }} data-cursor-hover className="glass p-6 inline-block text-left max-w-md">
                 <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--neon)]">Step {String(i + 1).padStart(2, "0")}</div>
                 <h3 className="mt-2 text-xl font-semibold">{s.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
