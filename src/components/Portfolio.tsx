@@ -8,7 +8,9 @@ import {
 import akshayaAsset from "@/assets/akshaya-profile.jpg.asset.json";
 import retinoAsset from "@/assets/retino.jpg.asset.json";
 import giftstoreAsset from "@/assets/giftstore.jpg.asset.json";
+import resumeAsset from "@/assets/Akshaya_Resume.pdf.asset.json";
 const akshayaPhoto = akshayaAsset.url;
+const resumeUrl = resumeAsset.url;
 
 /* ---------- helpers ---------- */
 function useMagnetic(strength = 0.35) {
@@ -100,8 +102,8 @@ function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
 
 /* ---------- Magnetic button ---------- */
 function MagneticButton({
-  children, href, onClick, variant = "primary",
-}: { children: React.ReactNode; href?: string; onClick?: () => void; variant?: "primary" | "ghost" }) {
+  children, href, onClick, variant = "primary", download,
+}: { children: React.ReactNode; href?: string; onClick?: () => void; variant?: "primary" | "ghost"; download?: boolean | string }) {
   const { ref, sx, sy } = useMagnetic(0.3);
   const cls =
     variant === "primary"
@@ -113,7 +115,19 @@ function MagneticButton({
       {children}
     </motion.div>
   );
-  if (href) return <a href={href} target="_blank" rel="noreferrer">{inner}</a>;
+  if (href) {
+    const downloadAttr = download === true ? "" : download;
+    return (
+      <a
+        href={href}
+        target={download ? undefined : "_blank"}
+        rel="noreferrer"
+        {...(download !== undefined ? { download: downloadAttr as string } : {})}
+      >
+        {inner}
+      </a>
+    );
+  }
   return <button onClick={onClick}>{inner}</button>;
 }
 
@@ -325,7 +339,7 @@ function Hero() {
             className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-4"
           >
             <MagneticButton href="#projects"><Sparkles className="h-4 w-4" /> View Projects</MagneticButton>
-            <MagneticButton variant="ghost" href="/resume.pdf"><Download className="h-4 w-4" /> Download Resume</MagneticButton>
+            <MagneticButton variant="ghost" href={resumeUrl} download="Akshaya_Resume.pdf"><Download className="h-4 w-4" /> Download Resume</MagneticButton>
             <MagneticButton variant="ghost" href="https://linkedin.com/in/akshayaparella"><Linkedin className="h-4 w-4" /> LinkedIn</MagneticButton>
           </motion.div>
 
@@ -786,7 +800,7 @@ function Contact() {
             <p className="text-sm text-muted-foreground">Download the full résumé as PDF.</p>
           </div>
         </div>
-        <MagneticButton href="/resume.pdf"><Download className="h-4 w-4" /> Download Resume</MagneticButton>
+        <MagneticButton href={resumeUrl} download="Akshaya_Resume.pdf"><Download className="h-4 w-4" /> Download Resume</MagneticButton>
       </div>
     </Section>
   );
