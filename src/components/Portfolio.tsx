@@ -153,74 +153,201 @@ function Nav() {
 }
 
 /* ---------- HERO ---------- */
+const ORBIT_LOGOS = [
+  { name: "Python", url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+  { name: "TensorFlow", url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg" },
+  { name: "OpenCV", url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg" },
+  { name: "GitHub", url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
+  { name: "MySQL", url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+  { name: "HTML5", url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
+  { name: "CSS3", url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
+  { name: "JavaScript", url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
+  { name: "VSCode", url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" },
+  { name: "Jupyter", url: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg" },
+];
+
+function ProfileOrb() {
+  const wrap = useRef<HTMLDivElement>(null);
+  const rx = useMotionValue(0); const ry = useMotionValue(0);
+  const srx = useSpring(rx, { stiffness: 120, damping: 14 });
+  const sry = useSpring(ry, { stiffness: 120, damping: 14 });
+  const onMove = (e: React.MouseEvent) => {
+    const el = wrap.current!; const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    ry.set(px * 18); rx.set(-py * 18);
+  };
+  const onLeave = () => { rx.set(0); ry.set(0); };
+  return (
+    <div
+      ref={wrap}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{ perspective: 1200 }}
+      className="relative mx-auto aspect-square w-[min(88vw,520px)]"
+    >
+      {/* aurora glow */}
+      <div className="pointer-events-none absolute inset-0 -z-10 rounded-full blur-3xl opacity-70"
+           style={{ background: "radial-gradient(circle at 50% 50%, oklch(0.72 0.2 250 / 50%), transparent 60%), radial-gradient(circle at 70% 30%, oklch(0.68 0.25 300 / 45%), transparent 65%)" }} />
+
+      <motion.div
+        style={{ rotateX: srx, rotateY: sry, transformStyle: "preserve-3d" }}
+        className="relative h-full w-full"
+      >
+        {/* rotating gradient ring */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 rounded-full"
+          style={{ background: "conic-gradient(from 0deg, oklch(0.72 0.2 250), oklch(0.68 0.25 300), oklch(0.78 0.18 230), oklch(0.72 0.2 250))", padding: 3, WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))", mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))" }}
+        />
+        {/* pulsing inner ring */}
+        <motion.div
+          animate={{ scale: [1, 1.04, 1], opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 3.2, repeat: Infinity }}
+          className="absolute inset-[14px] rounded-full border border-[var(--neon)]/50"
+          style={{ boxShadow: "inset 0 0 60px oklch(0.72 0.2 250 / 40%), 0 0 60px oklch(0.68 0.25 300 / 40%)" }}
+        />
+        {/* photo */}
+        <div className="absolute inset-[22px] overflow-hidden rounded-full border border-white/10 shadow-[0_0_80px_oklch(0.72_0.2_250/50%)]"
+             style={{ transform: "translateZ(40px)" }}>
+          <img src={akshayaPhoto} alt="Akshaya Parella" className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        </div>
+
+        {/* orbiting logos — two orbits */}
+        {[
+          { radius: 0.58, duration: 22, dir: 1, items: ORBIT_LOGOS.slice(0, 5) },
+          { radius: 0.74, duration: 34, dir: -1, items: ORBIT_LOGOS.slice(5) },
+        ].map((orbit, oi) => (
+          <motion.div
+            key={oi}
+            animate={{ rotate: 360 * orbit.dir }}
+            transition={{ duration: orbit.duration, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0"
+            style={{ transform: "translateZ(60px)" }}
+          >
+            {orbit.items.map((logo, i) => {
+              const angle = (i / orbit.items.length) * 360;
+              return (
+                <div
+                  key={logo.name}
+                  className="absolute left-1/2 top-1/2"
+                  style={{ transform: `rotate(${angle}deg) translateY(-${orbit.radius * 100}%) rotate(-${angle}deg)` }}
+                >
+                  <motion.div
+                    animate={{ rotate: -360 * orbit.dir }}
+                    transition={{ duration: orbit.duration, repeat: Infinity, ease: "linear" }}
+                    className="grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-xl glass-strong shadow-[0_0_20px_oklch(0.72_0.2_250/40%)]"
+                  >
+                    <img src={logo.url} alt={logo.name} className="h-6 w-6" loading="lazy" />
+                  </motion.div>
+                </div>
+              );
+            })}
+          </motion.div>
+        ))}
+
+        {/* floating AI particle dots */}
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute h-1.5 w-1.5 rounded-full bg-[var(--neon)]"
+            style={{
+              top: `${20 + Math.sin(i) * 30 + 30}%`,
+              left: `${20 + Math.cos(i * 1.7) * 30 + 30}%`,
+              boxShadow: "0 0 12px oklch(0.78 0.18 230)",
+            }}
+            animate={{ y: [0, -14, 0], opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 2 + i * 0.4, repeat: Infinity, delay: i * 0.2 }}
+          />
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
 function Hero() {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 800], [0, 200]);
   const opacity = useTransform(scrollY, [0, 500], [1, 0]);
   return (
-    <section id="hero" className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-28">
-      <motion.div style={{ y, opacity }} className="relative z-10 mx-auto max-w-5xl text-center">
+    <section id="hero" className="relative flex min-h-screen items-center overflow-hidden px-6 pt-28">
+      <motion.div style={{ y, opacity }} className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-2">
+        <div className="text-center lg:text-left">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+            className="mb-8 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-mono"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--neon)] opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--neon)]" />
+            </span>
+            Available for AI Engineering roles
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05]"
+          >
+            <span className="block text-muted-foreground text-lg md:text-xl font-medium mb-3">Hello, I'm</span>
+            <span className="block">Akshaya</span>
+            <span className="gradient-text">Parella</span>
+          </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+            className="mt-6 text-lg md:text-2xl text-muted-foreground h-8"
+          >
+            <Typewriter phrases={[
+              "AI Engineer",
+              "Python Developer",
+              "Machine Learning Enthusiast",
+              "Deep Learning Explorer",
+              "Pega Developer",
+            ]} />
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
+            className="mx-auto lg:mx-0 mt-6 max-w-xl text-base md:text-lg text-muted-foreground"
+          >
+            Artificial Intelligence Engineer · Python Developer · AI Research Enthusiast.
+            Designing intelligent systems where deep learning meets real-world product.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1 }}
+            className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-4"
+          >
+            <MagneticButton href="#projects"><Sparkles className="h-4 w-4" /> View Projects</MagneticButton>
+            <MagneticButton variant="ghost" href="/resume.pdf"><Download className="h-4 w-4" /> Download Resume</MagneticButton>
+            <MagneticButton variant="ghost" href="https://linkedin.com/in/akshayaparella"><Linkedin className="h-4 w-4" /> LinkedIn</MagneticButton>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}
+            className="mt-10 flex justify-center lg:justify-start gap-4"
+          >
+            {[
+              { Icon: Github, href: "https://github.com/" },
+              { Icon: Linkedin, href: "https://linkedin.com/" },
+              { Icon: Mail, href: "mailto:akshaya@example.com" },
+            ].map(({ Icon, href }, i) => (
+              <a key={i} href={href} target="_blank" rel="noreferrer"
+                 className="grid h-11 w-11 place-items-center rounded-full glass transition-all hover:scale-110 hover:border-[var(--primary)]">
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
+          </motion.div>
+        </div>
+
         <motion.div
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-          className="mx-auto mb-8 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-mono"
+          initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          className="relative"
         >
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--neon)] opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--neon)]" />
-          </span>
-          Available for AI Engineering roles
-        </motion.div>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05]"
-        >
-          <span className="block">Akshaya</span>
-          <span className="gradient-text">Parella</span>
-        </motion.h1>
-
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
-          className="mt-6 text-lg md:text-2xl text-muted-foreground h-8"
-        >
-          <Typewriter phrases={[
-            "AI Engineer.",
-            "Deep Learning Researcher.",
-            "Computer Vision Specialist.",
-            "Building intelligent systems.",
-          ]} />
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
-          className="mx-auto mt-6 max-w-2xl text-base md:text-lg text-muted-foreground"
-        >
-          I design and ship production-grade AI — from CNN-powered medical diagnostics
-          to enterprise workflow automation. Obsessed with the seam where research meets product.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-4"
-        >
-          <MagneticButton href="#projects"><Sparkles className="h-4 w-4" /> View Projects</MagneticButton>
-          <MagneticButton variant="ghost" href="/resume.pdf"><Download className="h-4 w-4" /> Download Resume</MagneticButton>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}
-          className="mt-12 flex justify-center gap-4"
-        >
-          {[
-            { Icon: Github, href: "https://github.com/" },
-            { Icon: Linkedin, href: "https://linkedin.com/" },
-            { Icon: Mail, href: "mailto:akshaya@example.com" },
-          ].map(({ Icon, href }, i) => (
-            <a key={i} href={href} target="_blank" rel="noreferrer"
-               className="grid h-11 w-11 place-items-center rounded-full glass transition-all hover:scale-110 hover:border-[var(--primary)]">
-              <Icon className="h-4 w-4" />
-            </a>
-          ))}
+          <ProfileOrb />
         </motion.div>
       </motion.div>
 
